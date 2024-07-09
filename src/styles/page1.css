@@ -1,0 +1,66 @@
+.table-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  .program-table,
+  .objetivo-table {
+    width: 48%;
+    border-collapse: collapse; 
+    margin-bottom: 20px; 
+  }
+  .program-table th,
+  .program-table td,
+  .objetivo-table th,
+  .objetivo-table td {
+    border: 1px solid #ddd; 
+    padding: 8px; 
+    text-align: left; 
+  }
+  .program-item,
+  .objetivo-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  
+  .edit-buttons {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 10px;
+  }
+  
+  .edit-buttons .MuiIconButton-root {
+    margin-right: 10px;
+  }
+  
+  .edit-buttons .MuiIconButton-root {
+    margin-right: 10px;
+  }
+  
+  .table-container {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .program-table,
+  .objetivo-table {
+    width: 50%;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+    text-align: left;
+  }
+    
+  

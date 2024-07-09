@@ -1,0 +1,138 @@
+:root {
+  font-family: 'Roboto', sans-serif;
+  color: rgba(99, 103, 110, 0.96);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  align-items: center;
+  background-color: #ddd;
+  box-shadow: rgb(191, 185, 166) 1px 2px 6px;
+  padding: 20px 0;
+  margin-bottom: 20px;
+}
+
+h1 {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  width: 50%;
+}
+
+#logoContainer {
+  width: 400px;
+  text-align: left;
+}
+
+img {
+  width: 80%;
+  margin-left: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+.accordion {
+  margin-top: 20px;
+}
+
+.card-header {
+  cursor: pointer;
+  font-size: 1.2rem;
+  background-color: #fff;
+  border: none;
+}
+
+.card {
+  border: none;
+}
+
+.card-body {
+  padding: 0.75rem 1.25rem;
+  background-color: #f9f9f9;
+}
+
+.table-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.table {
+  margin: 0;
+  width: 48%;
+}
+
+.edit-buttons {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.edit-buttons button {
+  margin-right: 10px;
+}
+
+.edit-input {
+  display: none;
+  width: 80%;
+}
+
+.loading-icon {
+  display: none;
+}
+
+.btn-edit {
+  background-color: #FFBF00;
+  color: white;
+  border: none;
+}
+
+.btn-edit .fas {
+  color: white;
+}
+
+.btn-save {
+  background-color: #28a745;
+  color: white;
+  border: none;
+}
+
+.btn-save .fas {
+  color: white;
+}
+
+#content-page1, #content-page2 {
+  display: none;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.btn-lg {
+  font-size: 1.25rem;
+}
