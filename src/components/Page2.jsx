@@ -116,7 +116,7 @@ const Page2 = () => {
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: '#fff' }}>
                 <div>
-                  {/* <Typography variant="h6">Objetivos</Typography> */}
+                  {/* <Typography variant="h6">Objetivos</Typography>  */}
                   {data.obj2.filter((obj) => obj.id_esc_ofi === escOfi.id).map((obj2, k) => (
                     <Accordion key={k}>
                       {/* <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#f0f0f0' }}>
