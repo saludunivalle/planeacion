@@ -18,7 +18,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
-import '../styles/page1.css'; // Importa el CSS
+import '../styles/page1.css'; 
 
 const Page2 = () => {
   const [data, setData] = useState({ escOfi: [], obj2: [], indicadores: [] });
@@ -116,10 +116,10 @@ const Page2 = () => {
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: '#fff' }}>
                 <div>
-                  <Typography variant="h6">Objetivos</Typography>
+                  {/* <Typography variant="h6">Objetivos</Typography> */}
                   {data.obj2.filter((obj) => obj.id_esc_ofi === escOfi.id).map((obj2, k) => (
                     <Accordion key={k}>
-                      <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#f0f0f0' }}>
+                      {/* <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#f0f0f0' }}>
                         {editState[`obj2-${obj2.id}`] ? (
                           <TextField
                             id={`obj2-${obj2.id}`}
@@ -140,7 +140,7 @@ const Page2 = () => {
                             </IconButton>
                           )}
                         </div>
-                      </AccordionSummary>
+                      </AccordionSummary> */}
                       <AccordionDetails sx={{ backgroundColor: '#fff' }}>
                         <Box sx={{ display: 'flex', width: '100%' }}>
                           <Box sx={{ flex: 1 }}>

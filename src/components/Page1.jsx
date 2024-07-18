@@ -13,7 +13,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
-import '../styles/page1.css'; // Importa el CSS
+import '../styles/page1.css'; 
 
 const Page1 = () => {
   const [data, setData] = useState({ ejes: [], estrategias: [], programas: [], objetivos: [] });
@@ -62,7 +62,6 @@ const Page1 = () => {
         .post('https://planeacion-server.vercel.app/updateData', payload)
         .then((response) => {
           console.log('Respuesta del servidor:', response);
-          // Actualiza el estado con el nuevo nombre
           const newData = { ...data };
           newData[type + 's'] = newData[type + 's'].map(item =>
             item.id === id ? { ...item, nombre: newName } : item
@@ -144,7 +143,7 @@ const Page1 = () => {
                   </AccordionSummary>
                   <AccordionDetails sx={{ backgroundColor: '#fff' }}>
                     <div className="table-container">
-                      <div className="program-table">
+                      {/* <div className="program-table">
                         <Typography variant="h6">Programas</Typography>
                         <table>
                           <thead>
@@ -184,7 +183,7 @@ const Page1 = () => {
                             ))}
                           </tbody>
                         </table>
-                      </div>
+                      </div> */}
                       <div className="objetivo-table">
                         <Typography variant="h6">Objetivos</Typography>
                         <table>
