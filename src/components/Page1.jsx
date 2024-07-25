@@ -13,13 +13,15 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
-import '../styles/page1.css'; 
+import '../styles/page1.css';
 
 const Page1 = () => {
   const [data, setData] = useState({ ejes: [], estrategias: [], programas: [], objetivos: [] });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editState, setEditState] = useState({});
+
+  const userPermissions = JSON.parse(sessionStorage.getItem('logged'));
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,7 +94,7 @@ const Page1 = () => {
       </Typography>
       {data.ejes.map((eje, i) => (
         <Accordion key={i}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#f0f0f0' }}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#e3e4e5' }}>
             {editState[`eje-${eje.id}`] ? (
               <TextField
                 id={`eje-${eje.id}`}
@@ -103,23 +105,25 @@ const Page1 = () => {
             ) : (
               <Typography id={`eje-display-${eje.id}`}>{eje.nombre}</Typography>
             )}
-            <div className="edit-buttons">
-              <IconButton color="primary" size="small" onClick={() => handleEdit('eje', eje.id)}>
-                <EditIcon />
-              </IconButton>
-              {editState[`eje-${eje.id}`] && (
-                <IconButton color="secondary" size="small" onClick={() => handleEdit('eje', eje.id, true)}>
-                  <SaveIcon />
+            {userPermissions.permiso === 'Sistemas' && (
+              <div className="edit-buttons">
+                <IconButton color="primary" size="small" onClick={() => handleEdit('eje', eje.id)}>
+                  <EditIcon />
                 </IconButton>
-              )}
-            </div>
+                {editState[`eje-${eje.id}`] && (
+                  <IconButton color="secondary" size="small" onClick={() => handleEdit('eje', eje.id, true)}>
+                    <SaveIcon />
+                  </IconButton>
+                )}
+              </div>
+            )}
           </AccordionSummary>
           <AccordionDetails sx={{ backgroundColor: '#fff' }}>
             <div>
               <Typography variant="h6">Estrategias</Typography>
               {data.estrategias.filter((e) => e.id_eje === eje.id).map((estrategia, j) => (
                 <Accordion key={j}>
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#f0f0f0' }}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#e3e4e5' }}>
                     {editState[`estrategia-${estrategia.id}`] ? (
                       <TextField
                         id={`estrategia-${estrategia.id}`}
@@ -130,73 +134,33 @@ const Page1 = () => {
                     ) : (
                       <Typography id={`estrategia-display-${estrategia.id}`}>{estrategia.nombre}</Typography>
                     )}
-                    <div className="edit-buttons">
-                      <IconButton color="primary" size="small" onClick={() => handleEdit('estrategia', estrategia.id)}>
-                        <EditIcon />
-                      </IconButton>
-                      {editState[`estrategia-${estrategia.id}`] && (
-                        <IconButton color="secondary" size="small" onClick={() => handleEdit('estrategia', estrategia.id, true)}>
-                          <SaveIcon />
+                    {userPermissions.permiso === 'Sistemas' && (
+                      <div className="edit-buttons">
+                        <IconButton color="primary" size="small" onClick={() => handleEdit('estrategia', estrategia.id)}>
+                          <EditIcon />
                         </IconButton>
-                      )}
-                    </div>
+                        {editState[`estrategia-${estrategia.id}`] && (
+                          <IconButton color="secondary" size="small" onClick={() => handleEdit('estrategia', estrategia.id, true)}>
+                            <SaveIcon />
+                          </IconButton>
+                        )}
+                      </div>
+                    )}
                   </AccordionSummary>
                   <AccordionDetails sx={{ backgroundColor: '#fff' }}>
                     <div className="table-container">
-                      {/* <div className="program-table">
-                        <Typography variant="h6">Programas</Typography>
-                        <table>
-                          <thead>
-                            <tr>
-                              <th>Programa</th>
-                              <th>Acciones</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {data.programas.filter((p) => p.id_estrategia === estrategia.id).map((programa, k) => (
-                              <tr key={k}>
-                                <td>
-                                  {editState[`programa-${programa.id}`] ? (
-                                    <TextField
-                                      id={`programa-${programa.id}`}
-                                      defaultValue={programa.nombre}
-                                      variant="outlined"
-                                      size="small"
-                                    />
-                                  ) : (
-                                    <Typography id={`programa-display-${programa.id}`}>{programa.nombre}</Typography>
-                                  )}
-                                </td>
-                                <td>
-                                  <div className="edit-buttons">
-                                    <IconButton color="primary" size="small" onClick={() => handleEdit('programa', programa.id)}>
-                                      <EditIcon />
-                                    </IconButton>
-                                    {editState[`programa-${programa.id}`] && (
-                                      <IconButton color="secondary" size="small" onClick={() => handleEdit('programa', programa.id, true)}>
-                                        <SaveIcon />
-                                      </IconButton>
-                                    )}
-                                  </div>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div> */}
                       <div className="objetivo-table">
                         <Typography variant="h6">Objetivos</Typography>
                         <table>
                           <thead>
                             <tr>
                               <th>Objetivo</th>
-                              <th>Acciones</th>
                             </tr>
                           </thead>
                           <tbody>
                             {data.objetivos.filter((o) => o.id_estrategia === estrategia.id).map((objetivo, l) => (
                               <tr key={l}>
-                                <td>
+                                <td style={{ display: 'flex', alignItems: 'center' }}>
                                   {editState[`objetivo-${objetivo.id}`] ? (
                                     <TextField
                                       id={`objetivo-${objetivo.id}`}
@@ -207,18 +171,18 @@ const Page1 = () => {
                                   ) : (
                                     <Typography id={`objetivo-display-${objetivo.id}`}>{objetivo.nombre}</Typography>
                                   )}
-                                </td>
-                                <td>
-                                  <div className="edit-buttons">
-                                    <IconButton color="primary" size="small" onClick={() => handleEdit('objetivo', objetivo.id)}>
-                                      <EditIcon />
-                                    </IconButton>
-                                    {editState[`objetivo-${objetivo.id}`] && (
-                                      <IconButton color="secondary" size="small" onClick={() => handleEdit('objetivo', objetivo.id, true)}>
-                                        <SaveIcon />
+                                  {userPermissions.permiso === 'Sistemas' && (
+                                    <>
+                                      <IconButton color="primary" size="small" onClick={() => handleEdit('objetivo', objetivo.id)}>
+                                        <EditIcon />
                                       </IconButton>
-                                    )}
-                                  </div>
+                                      {editState[`objetivo-${objetivo.id}`] && (
+                                        <IconButton color="secondary" size="small" onClick={() => handleEdit('objetivo', objetivo.id, true)}>
+                                          <SaveIcon />
+                                        </IconButton>
+                                      )}
+                                    </>
+                                  )}
                                 </td>
                               </tr>
                             ))}

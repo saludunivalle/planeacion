@@ -13,7 +13,7 @@ const HeaderContainer = styled("div")(({ theme }) => ({
   top: 0,
   marginBottom: "60px",
   zIndex: 2,
-  backgroundColor: "#F2F2F2",
+  backgroundColor: "#e3e4e5",
   boxShadow: "0px 14px 20px -17px rgba(66, 68, 90, 1)",
   [theme.breakpoints.down("sm")]: {
     flexDirection: "column",
