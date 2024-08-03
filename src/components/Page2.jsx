@@ -188,7 +188,7 @@ const Page2 = () => {
       updateData: [ejecColumn, currentAvance]
     };
 
-    axios.post('https://planeacion-server.vercel.app/updateMetas', payload) // Cambiamos a la nueva ruta
+    axios.post('https://planeacion-server.vercel.app/updateMetas', payload) 
       .then((response) => {
         console.log('Avance actualizado:', response);
         const newData = { ...data };
