@@ -26,10 +26,10 @@ const Page1 = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const ejesResponse = await axios.post('http://localhost:3001/getData', { sheetName: 'EJES' });
-        const estrategiasResponse = await axios.post('http://localhost:3001/getData', { sheetName: 'ESTRATEGIAS' });
-        const programasResponse = await axios.post('http://localhost:3001/getData', { sheetName: 'PROGR_INST' });
-        const objetivosResponse = await axios.post('http://localhost:3001/getData', { sheetName: 'OBJ_DEC' });
+        const ejesResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'EJES' });
+        const estrategiasResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'ESTRATEGIAS' });
+        const programasResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'PROGR_INST' });
+        const objetivosResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'OBJ_DEC' });
 
         setData({
           ejes: ejesResponse.data.data,
@@ -61,7 +61,7 @@ const Page1 = () => {
       console.log('Datos a enviar:', payload);
 
       axios
-        .post('http://localhost:3001/updateData', payload)
+        .post('https://planeacion-server.vercel.app/updateData', payload)
         .then((response) => {
           console.log('Respuesta del servidor:', response);
           const newData = { ...data };

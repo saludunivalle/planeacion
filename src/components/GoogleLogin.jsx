@@ -13,7 +13,7 @@ const GoogleLogin = ({ setIsLogin, setUserInfo }) => {
     const data_decode = decodeToken(response.credential);
 
     try {
-      const permisosResponse = await axios.post('http://localhost:3001/getData', {
+      const permisosResponse = await axios.post('https://planeacion-server.vercel.app/getData', {
         sheetName: 'Permisos'
       });
 

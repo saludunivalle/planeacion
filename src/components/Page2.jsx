@@ -50,11 +50,11 @@ const Page2 = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const escOfiResponse = await axios.post('http://localhost:3001/getData', { sheetName: 'ESC_OFI' });
-        const obj2Response = await axios.post('http://localhost:3001/getData', { sheetName: 'OBJ_2' });
-        const indicadoresResponse = await axios.post('http://localhost:3001/getData', { sheetName: 'INDICADORES' });
-        const objDecResponse = await axios.post('http://localhost:3001/getData', { sheetName: 'OBJ_DEC' });
-        const metasResponse = await axios.post('http://localhost:3001/getData', { sheetName: 'METAS' });
+        const escOfiResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'ESC_OFI' });
+        const obj2Response = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'OBJ_2' });
+        const indicadoresResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'INDICADORES' });
+        const objDecResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'OBJ_DEC' });
+        const metasResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'METAS' });
 
         setData({
           escOfi: escOfiResponse.data.data,
@@ -87,7 +87,7 @@ const Page2 = () => {
       console.log('Datos a enviar:', payload);
 
       axios
-        .post('http://localhost:3001/updateData', payload)
+        .post('https://planeacion-server.vercel.app/updateData', payload)
         .then((response) => {
           console.log('Respuesta del servidor:', response);
           const newData = { ...data };
@@ -144,7 +144,7 @@ const Page2 = () => {
       sheetName: 'INDICADORES',
     };
 
-    axios.post('http://localhost:3001/createIndicator', payload)
+    axios.post('https://planeacion-server.vercel.app/createIndicator', payload)
       .then((response) => {
         console.log('Indicador creado:', response);
         setOpenDialog(false);
@@ -188,7 +188,7 @@ const Page2 = () => {
       updateData: [ejecColumn, currentAvance]
     };
 
-    axios.post('http://localhost:3001/updateMetas', payload) // Cambiamos a la nueva ruta
+    axios.post('https://planeacion-server.vercel.app/updateMetas', payload) // Cambiamos a la nueva ruta
       .then((response) => {
         console.log('Avance actualizado:', response);
         const newData = { ...data };
