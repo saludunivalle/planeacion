@@ -46,7 +46,7 @@ const App = () => {
                   sx={{ fontSize: '1rem', fontWeight: 'bold' }}
                   />
                 <Tab 
-                  label="Indicadores por Escuela/Oficina" 
+                  label="Indicadores por Dependencia" 
                   sx={{ fontSize: '1rem', fontWeight: 'bold' }}
                   />
               </Tabs>

@@ -228,116 +228,8 @@ const Page2 = () => {
   return (
     <Container className="mt-5">
       <Typography variant="h4" gutterBottom>
-        Indicadores por Escuela/Oficina
+        Indicadores por Dependencia
       </Typography>
-      {hasSchoolPermissions && (
-        <div>
-          <Typography variant="h5" sx={{ marginTop: '30px', marginBottom: '10px' }}>Escuelas</Typography>
-          {filteredEscOfi.filter((item) => item.tipo === 'Escuela').map((escOfi, j) => (
-            <Accordion key={j} defaultExpanded={true}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#e3e4e5' }}>
-                <Typography>{escOfi.nombre}</Typography>
-                {userPermissions.permiso === 'Sistemas' && (
-                  <IconButton color="primary" size="small" onClick={() => setOpenDialog(true)}>
-                    <AddIcon />
-                  </IconButton>
-                )}
-              </AccordionSummary>
-              <AccordionDetails sx={{ backgroundColor: '#fff' }}>
-                <div>
-                  {data.obj2.filter((obj) => obj.id_esc_ofi === escOfi.id).map((obj2, k) => (
-                    <Accordion key={k}>
-                      <AccordionDetails sx={{ backgroundColor: '#fff' }}>
-                        <Box sx={{ display: 'flex', width: '100%' }}>
-                          <Box sx={{ flex: 1 }}>
-                            {data.indicadores.filter((ind) => ind.id_obj2 === obj2.id).map((indicador, l) => (
-                              <Button
-                                key={l}
-                                variant="contained"
-                                onClick={() => handleIndicatorClick(indicador)}
-                                sx={{
-                                  display: 'block',
-                                  marginBottom: '10px',
-                                  backgroundColor: selectedIndicator === indicador.id ? '#a9a9a9' : '#d3d3d3',
-                                  color: '#000',
-                                  '&:hover': {
-                                    backgroundColor: '#a9a9a9',
-                                  },
-                                }}
-                              >
-                                {indicador.indicador}
-                              </Button>
-                            ))}
-                          </Box>
-                          <Box sx={{ flex: 2, marginLeft: '20px' }}>
-                            {indicatorContent && (
-                              <Paper sx={{ padding: '20px' }}>
-                                <Grid container spacing={2}>
-                                  <Grid item xs={12}>
-                                    <Typography variant="h6">{indicatorContent.indicador}</Typography>
-                                    <Typography>{indicatorContent.descripcion}</Typography>
-                                    <Grid item xs={12}>
-                                      <Typography>
-                                        <strong>Objetivo Decanato: </strong>
-                                        {data.objDec.find(objDec => objDec.id === indicatorContent.id_obj_dec)?.nombre || 'No disponible'}
-                                      </Typography>
-                                    </Grid>
-                                  </Grid>                                  
-                                  <Divider sx={{ width: '100%', marginY: '10px', borderWidth: '2px', borderColor: 'black' }} />
-                                  <Grid item xs={12}>
-                                    <Typography>
-                                      Meta {new Date().getFullYear()}: {getMetaForCurrentYear(indicatorContent.id)}
-                                    </Typography>
-                                    <Grid item xs={12}>
-                                      <Typography>
-                                        Avance {new Date().getFullYear()}:
-                                      </Typography>
-                                      {editAvanceState ? (
-                                        <>
-                                          <TextField
-                                            size="small"
-                                            value={currentAvance}
-                                            onChange={(e) => setCurrentAvance(e.target.value)}
-                                          />
-                                          <IconButton onClick={handleAvanceSave}>
-                                            <SaveIcon />
-                                          </IconButton>
-                                        </>
-                                      ) : (
-                                        <>
-                                          <Typography component="span">
-                                            {getAvanceForCurrentYear(indicatorContent.id)}
-                                          </Typography>
-                                          <IconButton onClick={handleAvanceEdit} disabled={userPermissions.permiso !== 'Sistemas' && userPermissions.permiso !== 'Escuela_prof'}>
-                                            <EditIcon />
-                                          </IconButton>
-                                        </>
-                                      )}
-                                    </Grid>
-                                  </Grid>
-                                  <Divider sx={{ width: '100%', marginY: '10px', borderWidth: '2px', borderColor: 'black' }} />
-                                  <Grid item xs={12}>
-                                    <Typography>¿Cómo se va a registrar las asistencias?</Typography>
-                                  </Grid>
-                                  <Divider sx={{ width: '100%', marginY: '10px', borderWidth: '2px', borderColor: 'black' }} />
-                                  <Grid item xs={12}>
-                                    <Typography>Responsable: {indicatorContent.responsable}</Typography>
-                                  </Grid>
-                                  <Divider sx={{ width: '100%', marginY: '10px', borderWidth: '2px', borderColor: 'black' }} />
-                                </Grid>
-                              </Paper>
-                            )}
-                          </Box>
-                        </Box>
-                      </AccordionDetails>
-                    </Accordion>
-                  ))}
-                </div>
-              </AccordionDetails>
-            </Accordion>
-          ))}
-        </div>
-      )}
       {hasOfficePermissions && (
         <div>
           <Typography variant="h5" sx={{ marginTop: '30px', marginBottom: '10px' }}>Oficinas</Typography>
@@ -398,6 +290,114 @@ const Page2 = () => {
                                   <Divider sx={{ width: '100%', marginY: '10px', borderWidth: '2px', borderColor: 'black' }} />
                                   <Grid item xs={12}>
                                     <Typography>Meta 2024: {indicatorContent.meta}</Typography>
+                                    <Grid item xs={12}>
+                                      <Typography>
+                                        Avance {new Date().getFullYear()}:
+                                      </Typography>
+                                      {editAvanceState ? (
+                                        <>
+                                          <TextField
+                                            size="small"
+                                            value={currentAvance}
+                                            onChange={(e) => setCurrentAvance(e.target.value)}
+                                          />
+                                          <IconButton onClick={handleAvanceSave}>
+                                            <SaveIcon />
+                                          </IconButton>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Typography component="span">
+                                            {getAvanceForCurrentYear(indicatorContent.id)}
+                                          </Typography>
+                                          <IconButton onClick={handleAvanceEdit} disabled={userPermissions.permiso !== 'Sistemas' && userPermissions.permiso !== 'Escuela_prof'}>
+                                            <EditIcon />
+                                          </IconButton>
+                                        </>
+                                      )}
+                                    </Grid>
+                                  </Grid>
+                                  <Divider sx={{ width: '100%', marginY: '10px', borderWidth: '2px', borderColor: 'black' }} />
+                                  <Grid item xs={12}>
+                                    <Typography>¿Cómo se va a registrar las asistencias?</Typography>
+                                  </Grid>
+                                  <Divider sx={{ width: '100%', marginY: '10px', borderWidth: '2px', borderColor: 'black' }} />
+                                  <Grid item xs={12}>
+                                    <Typography>Responsable: {indicatorContent.responsable}</Typography>
+                                  </Grid>
+                                  <Divider sx={{ width: '100%', marginY: '10px', borderWidth: '2px', borderColor: 'black' }} />
+                                </Grid>
+                              </Paper>
+                            )}
+                          </Box>
+                        </Box>
+                      </AccordionDetails>
+                    </Accordion>
+                  ))}
+                </div>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </div>
+      )}
+      {hasSchoolPermissions && (
+        <div>
+          <Typography variant="h5" sx={{ marginTop: '30px', marginBottom: '10px' }}>Escuelas</Typography>
+          {filteredEscOfi.filter((item) => item.tipo === 'Escuela').map((escOfi, j) => (
+            <Accordion key={j} defaultExpanded={true}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#e3e4e5' }}>
+                <Typography>{escOfi.nombre}</Typography>
+                {userPermissions.permiso === 'Sistemas' && (
+                  <IconButton color="primary" size="small" onClick={() => setOpenDialog(true)}>
+                    <AddIcon />
+                  </IconButton>
+                )}
+              </AccordionSummary>
+              <AccordionDetails sx={{ backgroundColor: '#fff' }}>
+                <div>
+                  {data.obj2.filter((obj) => obj.id_esc_ofi === escOfi.id).map((obj2, k) => (
+                    <Accordion key={k}>
+                      <AccordionDetails sx={{ backgroundColor: '#fff' }}>
+                        <Box sx={{ display: 'flex', width: '100%' }}>
+                          <Box sx={{ flex: 1 }}>
+                            {data.indicadores.filter((ind) => ind.id_obj2 === obj2.id).map((indicador, l) => (
+                              <Button
+                                key={l}
+                                variant="contained"
+                                onClick={() => handleIndicatorClick(indicador)}
+                                sx={{
+                                  display: 'block',
+                                  marginBottom: '10px',
+                                  backgroundColor: selectedIndicator === indicador.id ? '#a9a9a9' : '#d3d3d3',
+                                  color: '#000',
+                                  '&:hover': {
+                                    backgroundColor: '#a9a9a9',
+                                  },
+                                }}
+                              >
+                                {indicador.indicador}
+                              </Button>
+                            ))}
+                          </Box>
+                          <Box sx={{ flex: 2, marginLeft: '20px' }}>
+                            {indicatorContent && (
+                              <Paper sx={{ padding: '20px' }}>
+                                <Grid container spacing={2}>
+                                  <Grid item xs={12}>
+                                    <Typography variant="h6">{indicatorContent.indicador}</Typography>
+                                    <Typography>{indicatorContent.descripcion}</Typography>
+                                    <Grid item xs={12}>
+                                      <Typography>
+                                        <strong>Objetivo Decanato: </strong>
+                                        {data.objDec.find(objDec => objDec.id === indicatorContent.id_obj_dec)?.nombre || 'No disponible'}
+                                      </Typography>
+                                    </Grid>
+                                  </Grid>                                  
+                                  <Divider sx={{ width: '100%', marginY: '10px', borderWidth: '2px', borderColor: 'black' }} />
+                                  <Grid item xs={12}>
+                                    <Typography>
+                                      Meta {new Date().getFullYear()}: {getMetaForCurrentYear(indicatorContent.id)}
+                                    </Typography>
                                     <Grid item xs={12}>
                                       <Typography>
                                         Avance {new Date().getFullYear()}:
