@@ -36,8 +36,12 @@ const Page2 = () => {
     meta2024: '',
     meta2025: '',
     meta2026: '',
-    responsable: ''
+    responsable: '',
+    coequipero: '' 
   });
+  
+  const [selectedObjDecId, setSelectedObjDecId] = useState(null);
+  const [selectedEscOfiId, setSelectedEscOfiId] = useState(null); 
 
   const userPermissions = JSON.parse(sessionStorage.getItem('logged'));
 
@@ -82,20 +86,35 @@ const Page2 = () => {
     setNewIndicator({ ...newIndicator, [name]: value });
   };
 
+  const openCreateDialog = (objDecId, escOfiId) => {
+    setSelectedObjDecId(objDecId);
+    setSelectedEscOfiId(escOfiId); 
+    setOpenDialog(true); 
+  };
+
   const handleCreateIndicator = () => {
+    const tipoOficinaEscuela = hasSchoolPermissions ? 'Escuela' : 'Oficina'; 
+
     const payload = {
-      ...newIndicator,
-      oficinaEscuela: userPermissions.id_escuela,
-      sheetName: 'INDICADORES',
+      nombre: newIndicator.nombre,
+      oficinaEscuela: selectedEscOfiId, 
+      id_obj_dec: selectedObjDecId,    
+      responsable: newIndicator.responsable,
+      coequipero: newIndicator.coequipero,
+      meta2024: newIndicator.meta2024,
+      meta2025: newIndicator.meta2025,
+      meta2026: newIndicator.meta2026,
+      tipoOficinaEscuela: tipoOficinaEscuela, 
     };
 
     axios.post('https://planeacion-server.vercel.app/createIndicator', payload)
       .then((response) => {
         console.log('Indicador creado:', response);
         setOpenDialog(false);
+        alert(`Indicador y metas creados con éxito. Enlace al archivo: ${response.data.url}`);
       })
       .catch((error) => {
-        console.error('Error creating indicator:', error);
+        console.error('Error creando indicador:', error);
       });
   };
 
@@ -131,11 +150,6 @@ const Page2 = () => {
             <Accordion key={j}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#e3e4e5' }}>
                 <Typography>{escOfi.nombre}</Typography>
-                {userPermissions.permiso === 'Sistemas' && (
-                  <IconButton color="primary" size="small" onClick={() => setOpenDialog(true)}>
-                    <AddIcon />
-                  </IconButton>
-                )}
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: '#fff' }}>
                 {data.objDec
@@ -144,6 +158,15 @@ const Page2 = () => {
                     <Accordion key={objDec.id}>
                       <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#e3e4e5' }}>
                         <Typography>{objDec.nombre}</Typography>
+                        {userPermissions.permiso === 'Sistemas' && (
+                          <IconButton 
+                            color="primary" 
+                            size="small" 
+                            onClick={() => openCreateDialog(objDec.id, escOfi.id)} 
+                          >
+                            <AddIcon />
+                          </IconButton>
+                        )}
                       </AccordionSummary>
                       <AccordionDetails>
                         <Grid container spacing={2}>
@@ -158,10 +181,10 @@ const Page2 = () => {
                                   sx={{
                                     display: 'block',
                                     marginBottom: '10px',
-                                    backgroundColor: selectedIndicator === indicador.id ? '#919292' : '#b4b6b9', 
+                                    backgroundColor: selectedIndicator === indicador.id ? '#919292' : '#b4b6b9',
                                     color: 'black',
                                     '&:hover': {
-                                      backgroundColor: selectedIndicator === indicador.id ? '#e3e4e5' : '#e3e4e5', 
+                                      backgroundColor: selectedIndicator === indicador.id ? '#e3e4e5' : '#e3e4e5',
                                     },
                                   }}
                                 >
@@ -197,11 +220,6 @@ const Page2 = () => {
             <Accordion key={j}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#e3e4e5' }}>
                 <Typography>{escOfi.nombre}</Typography>
-                {userPermissions.permiso === 'Sistemas' && (
-                  <IconButton color="primary" size="small" onClick={() => setOpenDialog(true)}>
-                    <AddIcon />
-                  </IconButton>
-                )}
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: '#fff' }}>
                 {data.objDec
@@ -210,9 +228,17 @@ const Page2 = () => {
                     <Accordion key={objDec.id}>
                       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography>{objDec.nombre}</Typography>
+                        {userPermissions.permiso === 'Sistemas' && (
+                          <IconButton 
+                            color="primary" 
+                            size="small" 
+                            onClick={() => openCreateDialog(objDec.id, escOfi.id)} 
+                          >
+                            <AddIcon />
+                          </IconButton>
+                        )}
                       </AccordionSummary>
                       <AccordionDetails>
-                        {/* Contenedor dividido en dos: indicadores y tabla de detalles */}
                         <Grid container spacing={2}>
                           <Grid item xs={5}>
                             {data.indicadores
@@ -253,7 +279,7 @@ const Page2 = () => {
           ))}
         </div>
       )}
-
+  
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Crear Indicador</DialogTitle>
         <DialogContent>
@@ -302,6 +328,15 @@ const Page2 = () => {
             value={newIndicator.responsable}
             onChange={handleInputChange}
           />
+          <TextField
+            margin="dense"
+            label="Coequipero"
+            type="text"
+            fullWidth
+            name="coequipero"
+            value={newIndicator.coequipero}
+            onChange={handleInputChange}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)} color="primary">
@@ -317,3 +352,4 @@ const Page2 = () => {
 };
 
 export default Page2;
+
