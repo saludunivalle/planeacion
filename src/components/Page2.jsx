@@ -8,7 +8,6 @@ import {
   Button,
   Container,
   CircularProgress,
-  Box,
   Paper,
   Divider,
   Grid,
@@ -39,7 +38,9 @@ const Page2 = () => {
     responsable: '',
     coequipero: '' 
   });
-  
+  const [emailError, setEmailError] = useState(''); 
+  const [creatingIndicator, setCreatingIndicator] = useState(false);
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false); 
   const [selectedObjDecId, setSelectedObjDecId] = useState(null);
   const [selectedEscOfiId, setSelectedEscOfiId] = useState(null); 
 
@@ -81,9 +82,22 @@ const Page2 = () => {
     return metaRow ? metaRow[currentYear] : 'No disponible';
   };
 
+  const validateEmail = (email) => {
+    const universityEmailPattern = /^[a-zA-Z0-9._%+-]+@correounivalle\.edu\.co$/;
+    return universityEmailPattern.test(email);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewIndicator({ ...newIndicator, [name]: value });
+
+    if (name === 'responsable') {
+      if (!validateEmail(value)) {
+        setEmailError('El correo debe ser del dominio @correounivalle.edu.co');
+      } else {
+        setEmailError('');
+      }
+    }
   };
 
   const openCreateDialog = (objDecId, escOfiId) => {
@@ -93,6 +107,13 @@ const Page2 = () => {
   };
 
   const handleCreateIndicator = () => {
+    if (emailError || !validateEmail(newIndicator.responsable)) {
+      alert('Por favor, ingresa un correo válido del dominio @correounivalle.edu.co.');
+      return;
+    }
+
+    setCreatingIndicator(true); 
+
     const tipoOficinaEscuela = hasSchoolPermissions ? 'Escuela' : 'Oficina'; 
 
     const payload = {
@@ -110,11 +131,13 @@ const Page2 = () => {
     axios.post('https://planeacion-server.vercel.app/createIndicator', payload)
       .then((response) => {
         console.log('Indicador creado:', response);
-        setOpenDialog(false);
-        alert(`Indicador y metas creados con éxito. Enlace al archivo: ${response.data.url}`);
+        setCreatingIndicator(false); 
+        setSuccessDialogOpen(true); 
+        setOpenDialog(false); 
       })
       .catch((error) => {
         console.error('Error creando indicador:', error);
+        setCreatingIndicator(false); 
       });
   };
 
@@ -153,7 +176,7 @@ const Page2 = () => {
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: '#fff' }}>
                 {data.objDec
-                  .filter((objDec) => data.indicadores.some((indicador) => indicador.id_obj_dec === objDec.id && indicador.id_esc_ofi === escOfi.id)) // Filtra objetivos decanato vacíos
+                  .filter((objDec) => data.indicadores.some((indicador) => indicador.id_obj_dec === objDec.id && indicador.id_esc_ofi === escOfi.id)) 
                   .map((objDec) => (
                     <Accordion key={objDec.id}>
                       <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#e3e4e5' }}>
@@ -200,7 +223,9 @@ const Page2 = () => {
                                 <Typography>Meta {new Date().getFullYear()}: {getMetaForCurrentYear(indicatorContent.id)}</Typography>
                                 <Divider sx={{ width: '100%', marginY: '10px', borderWidth: '2px', borderColor: 'black' }} />
                                 <Typography>Responsable: {indicatorContent.responsable}</Typography>
-                                <Typography>Enlace al registro del avance del indicador: {indicatorContent.url_indicador}</Typography>
+                                <Typography>
+                                  Enlace al registro del avance del indicador: <a href={indicatorContent.url_indicador} target="_blank" rel="noopener noreferrer">Enlace</a>
+                                </Typography>
                               </Paper>
                             )}
                           </Grid>
@@ -223,7 +248,7 @@ const Page2 = () => {
               </AccordionSummary>
               <AccordionDetails sx={{ backgroundColor: '#fff' }}>
                 {data.objDec
-                  .filter((objDec) => data.indicadores.some((indicador) => indicador.id_obj_dec === objDec.id && indicador.id_esc_ofi === escOfi.id)) // Filtra objetivos decanato vacíos
+                  .filter((objDec) => data.indicadores.some((indicador) => indicador.id_obj_dec === objDec.id && indicador.id_esc_ofi === escOfi.id)) 
                   .map((objDec) => (
                     <Accordion key={objDec.id}>
                       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -327,6 +352,8 @@ const Page2 = () => {
             name="responsable"
             value={newIndicator.responsable}
             onChange={handleInputChange}
+            error={!!emailError} // Muestra el error visual si el correo no es válido
+            helperText={emailError} // Mensaje de error si el correo no es del dominio correcto
           />
           <TextField
             margin="dense"
@@ -337,6 +364,7 @@ const Page2 = () => {
             value={newIndicator.coequipero}
             onChange={handleInputChange}
           />
+          {creatingIndicator && <CircularProgress sx={{ marginTop: '20px' }} />} {/* Spinner de carga */}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)} color="primary">
@@ -344,6 +372,18 @@ const Page2 = () => {
           </Button>
           <Button onClick={handleCreateIndicator} color="primary">
             Crear
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={successDialogOpen} onClose={() => setSuccessDialogOpen(false)}>
+        <DialogTitle>Indicador Creado</DialogTitle>
+        <DialogContent>
+          <Typography>El indicador ha sido creado exitosamente.</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSuccessDialogOpen(false)} color="primary">
+            Cerrar
           </Button>
         </DialogActions>
       </Dialog>
