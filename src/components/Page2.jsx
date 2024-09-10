@@ -281,9 +281,6 @@ const Page2 = () => {
                                 <Typography>Meta {new Date().getFullYear()}: {getMetaForCurrentYear(indicatorContent.id)}</Typography>
                                 <Grid item xs={12}>
                                   <Typography>
-                                    Meta {new Date().getFullYear()}: {getMetaForCurrentYear(indicatorContent.id)}
-                                  </Typography>
-                                  <Typography>
                                     Avance {new Date().getFullYear()}:
                                   </Typography>
                                   {editAvanceState ? (
