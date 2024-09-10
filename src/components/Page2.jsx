@@ -31,6 +31,7 @@ const Page2 = () => {
   const [selectedIndicator, setSelectedIndicator] = useState(null);
   const [indicatorContent, setIndicatorContent] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [expandedAccordion, setExpandedAccordion] = useState(null); 
   const [newIndicator, setNewIndicator] = useState({
     nombre: '',
     oficinaEscuela: '',
@@ -74,6 +75,12 @@ const Page2 = () => {
 
     fetchData();
   }, []);
+
+  const handleAccordionChange = (panel) => (event, isExpanded) => {
+    setExpandedAccordion(isExpanded ? panel : null); 
+    setSelectedIndicator(null); 
+    setIndicatorContent(null); 
+  };
 
   const handleIndicatorClick = (indicator) => {
     setSelectedIndicator(indicator.id);
@@ -215,7 +222,9 @@ const Page2 = () => {
         <div>
           <Typography variant="h5" sx={{ marginTop: '30px', marginBottom: '10px' }}>Oficinas</Typography>
           {filteredEscOfi.filter((item) => item.tipo === 'Oficina').map((escOfi, j) => (
-            <Accordion key={j}>
+            <Accordion
+              key={j}
+            >
               <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#e3e4e5' }}>
                 <Typography>{escOfi.nombre}</Typography>
               </AccordionSummary>
@@ -223,7 +232,11 @@ const Page2 = () => {
                 {data.objDec
                   .filter((objDec) => data.indicadores.some((indicador) => indicador.id_obj_dec === objDec.id && indicador.id_esc_ofi === escOfi.id)) 
                   .map((objDec) => (
-                    <Accordion key={objDec.id}>
+                    <Accordion
+                      key={objDec.id}
+                      expanded={expandedAccordion === objDec.id} 
+                      onChange={handleAccordionChange(objDec.id)} 
+                    >
                       <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#e3e4e5' }}>
                         <Typography>{objDec.nombre}</Typography>
                         {userPermissions.permiso === 'Sistemas' && (
@@ -267,34 +280,34 @@ const Page2 = () => {
                                 <Typography>{indicatorContent.descripcion}</Typography>
                                 <Typography>Meta {new Date().getFullYear()}: {getMetaForCurrentYear(indicatorContent.id)}</Typography>
                                 <Grid item xs={12}>
-                                    <Typography>
-                                      Meta {new Date().getFullYear()}: {getMetaForCurrentYear(indicatorContent.id)}
-                                    </Typography>
-                                      <Typography>
-                                        Avance {new Date().getFullYear()}:
+                                  <Typography>
+                                    Meta {new Date().getFullYear()}: {getMetaForCurrentYear(indicatorContent.id)}
+                                  </Typography>
+                                  <Typography>
+                                    Avance {new Date().getFullYear()}:
+                                  </Typography>
+                                  {editAvanceState ? (
+                                    <>
+                                      <TextField
+                                        size="small"
+                                        value={currentAvance}
+                                        onChange={(e) => setCurrentAvance(e.target.value)}
+                                      />
+                                      <IconButton onClick={handleAvanceSave}>
+                                        <SaveIcon />
+                                      </IconButton>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Typography component="span">
+                                        {getAvanceForCurrentYear(indicatorContent.id)}
                                       </Typography>
-                                      {editAvanceState ? (
-                                        <>
-                                          <TextField
-                                            size="small"
-                                            value={currentAvance}
-                                            onChange={(e) => setCurrentAvance(e.target.value)}
-                                          />
-                                          <IconButton onClick={handleAvanceSave}>
-                                            <SaveIcon />
-                                          </IconButton>
-                                        </>
-                                      ) : (
-                                        <>
-                                          <Typography component="span">
-                                            {getAvanceForCurrentYear(indicatorContent.id)}
-                                          </Typography>
-                                          <IconButton onClick={handleAvanceEdit} disabled={userPermissions.permiso !== 'Sistemas' && userPermissions.permiso !== 'Escuela_prof'}>
-                                            <EditIcon />
-                                          </IconButton>
-                                        </>
-                                      )}
-                                  </Grid>
+                                      <IconButton onClick={handleAvanceEdit} disabled={userPermissions.permiso !== 'Sistemas' && userPermissions.permiso !== 'Escuela_prof'}>
+                                        <EditIcon />
+                                      </IconButton>
+                                    </>
+                                  )}
+                                </Grid>
                                 <Divider sx={{ width: '100%', marginY: '10px', borderWidth: '2px', borderColor: 'black' }} />
                                 <Typography>Responsable: {indicatorContent.responsable}</Typography>
                                 <Typography>
@@ -316,7 +329,9 @@ const Page2 = () => {
         <div>
           <Typography variant="h5" sx={{ marginTop: '30px', marginBottom: '10px' }}>Escuelas</Typography>
           {filteredEscOfi.filter((item) => item.tipo === 'Escuela').map((escOfi, j) => (
-            <Accordion key={j}>
+            <Accordion
+              key={j}
+            >
               <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#e3e4e5' }}>
                 <Typography>{escOfi.nombre}</Typography>
               </AccordionSummary>
@@ -324,7 +339,11 @@ const Page2 = () => {
                 {data.objDec
                   .filter((objDec) => data.indicadores.some((indicador) => indicador.id_obj_dec === objDec.id && indicador.id_esc_ofi === escOfi.id)) 
                   .map((objDec) => (
-                    <Accordion key={objDec.id}>
+                    <Accordion
+                      key={objDec.id}
+                      expanded={expandedAccordion === objDec.id} 
+                      onChange={handleAccordionChange(objDec.id)} 
+                    >
                       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography>{objDec.nombre}</Typography>
                         {userPermissions.permiso === 'Sistemas' && (
@@ -426,8 +445,8 @@ const Page2 = () => {
             name="responsable"
             value={newIndicator.responsable}
             onChange={handleInputChange}
-            error={!!emailError} // Muestra el error visual si el correo no es válido
-            helperText={emailError} // Mensaje de error si el correo no es del dominio correcto
+            error={!!emailError}
+            helperText={emailError} 
           />
           <TextField
             margin="dense"
@@ -438,7 +457,7 @@ const Page2 = () => {
             value={newIndicator.coequipero}
             onChange={handleInputChange}
           />
-          {creatingIndicator && <CircularProgress sx={{ marginTop: '20px' }} />} {/* Spinner de carga */}
+          {creatingIndicator && <CircularProgress sx={{ marginTop: '20px' }} />}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)} color="primary">
@@ -466,4 +485,3 @@ const Page2 = () => {
 };
 
 export default Page2;
-
