@@ -17,6 +17,8 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditIcon from '@mui/icons-material/Edit';
@@ -307,6 +309,7 @@ const Page2 = () => {
                                 </Grid>
                                 <Divider sx={{ width: '100%', marginY: '10px', borderWidth: '2px', borderColor: 'black' }} />
                                 <Typography>Responsable: {indicatorContent.responsable}</Typography>
+                                <Typography>Coequipero: {indicatorContent.coequipero || 'NA'}</Typography>
                                 <Typography>
                                   Enlace al registro del avance del indicador: <a href={indicatorContent.url_indicador} target="_blank" rel="noopener noreferrer">Enlace</a>
                                 </Typography>
@@ -445,15 +448,22 @@ const Page2 = () => {
             error={!!emailError}
             helperText={emailError} 
           />
-          <TextField
-            margin="dense"
-            label="Coequipero"
-            type="text"
+          {/* Select para el Coequipero */}
+          <Select
             fullWidth
-            name="coequipero"
             value={newIndicator.coequipero}
-            onChange={handleInputChange}
-          />
+            onChange={(e) => setNewIndicator({ ...newIndicator, coequipero: e.target.value })}
+            displayEmpty
+          >
+            <MenuItem value="" disabled>Selecciona un coequipero</MenuItem>
+            <MenuItem value="NA">NA</MenuItem> {/* Opción NA */}
+            {data.escOfi.map((escOfi) => (
+              <MenuItem key={escOfi.id} value={escOfi.nombre}>
+                {escOfi.nombre}
+              </MenuItem>
+            ))}
+          </Select>
+
           {creatingIndicator && <CircularProgress sx={{ marginTop: '20px' }} />}
         </DialogContent>
         <DialogActions>
