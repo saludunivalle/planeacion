@@ -53,28 +53,28 @@ const Page2 = () => {
 
   const userPermissions = JSON.parse(sessionStorage.getItem('logged'));
 
+  const fetchData = async () => {
+    try {
+      const escOfiResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'ESC_OFI' });
+      const objDecResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'OBJ_DEC' });
+      const indicadoresResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'INDICADORES' });
+      const metasResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'METAS' });
+
+      setData({
+        escOfi: escOfiResponse.data.data,
+        objDec: objDecResponse.data.data,
+        indicadores: indicadoresResponse.data.data,
+        metas: metasResponse.data.data,
+      });
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setError(error);
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const escOfiResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'ESC_OFI' });
-        const objDecResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'OBJ_DEC' });
-        const indicadoresResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'INDICADORES' });
-        const metasResponse = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'METAS' });
-
-        setData({
-          escOfi: escOfiResponse.data.data,
-          objDec: objDecResponse.data.data,
-          indicadores: indicadoresResponse.data.data,
-          metas: metasResponse.data.data,
-        });
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError(error);
-        setIsLoading(false);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -214,6 +214,11 @@ const Page2 = () => {
 
   const hasSchoolPermissions = filteredEscOfi.some(item => item.tipo === 'Escuela');
   const hasOfficePermissions = filteredEscOfi.some(item => item.tipo === 'Oficina');
+
+  const handleSuccessDialogClose = () => {
+    setSuccessDialogOpen(false); // Cerrar el mensaje de éxito
+    fetchData(); // Actualizar los datos para que el usuario vea el indicador recién creado
+  };
 
   return (
     <Container className="mt-5">
@@ -482,7 +487,7 @@ const Page2 = () => {
           <Typography>El indicador ha sido creado exitosamente.</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setSuccessDialogOpen(false)} color="primary">
+          <Button onClick={() => handleSuccessDialogClose()} color="primary">
             Cerrar
           </Button>
         </DialogActions>
