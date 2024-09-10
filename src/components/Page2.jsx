@@ -19,6 +19,8 @@ import {
   TextField,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
 import AddIcon from '@mui/icons-material/Add';
 import '../styles/page1.css';
 
@@ -43,6 +45,8 @@ const Page2 = () => {
   const [successDialogOpen, setSuccessDialogOpen] = useState(false); 
   const [selectedObjDecId, setSelectedObjDecId] = useState(null);
   const [selectedEscOfiId, setSelectedEscOfiId] = useState(null); 
+  const [editAvanceState, setEditAvanceState] = useState(false);
+  const [currentAvance, setCurrentAvance] = useState('');
 
   const userPermissions = JSON.parse(sessionStorage.getItem('logged'));
 
@@ -80,6 +84,47 @@ const Page2 = () => {
     const currentYear = new Date().getFullYear().toString();
     const metaRow = data.metas.find(meta => meta.id_indicador === indicatorId);
     return metaRow ? metaRow[currentYear] : 'No disponible';
+  };
+
+  const getAvanceForCurrentYear = (indicatorId) => {
+    const currentYear = new Date().getFullYear();
+    const ejecColumn = `ejec_${currentYear}`;
+    const metaRow = data.metas.find(meta => meta.id_indicador === indicatorId);
+    if (metaRow && metaRow[ejecColumn]) {
+      return metaRow[ejecColumn];
+    }
+    return '';
+  };
+
+  const handleAvanceEdit = () => {
+    setEditAvanceState(true);
+    setCurrentAvance(getAvanceForCurrentYear(selectedIndicator));
+  };
+
+  const handleAvanceSave = () => {
+    const currentYear = new Date().getFullYear();
+    const ejecColumn = `ejec_${currentYear}`;
+
+    const payload = {
+      id: selectedIndicator,
+      sheetName: 'METAS',
+      updateData: [ejecColumn, currentAvance]
+    };
+
+    axios.post('https://planeacion-server.vercel.app/updateMetas', payload) 
+      .then((response) => {
+        console.log('Avance actualizado:', response);
+        const newData = { ...data };
+        const metaIndex = newData.metas.findIndex(meta => meta.id_indicador === selectedIndicator);
+        if (metaIndex !== -1) {
+          newData.metas[metaIndex][ejecColumn] = currentAvance;
+        }
+        setData(newData);
+        setEditAvanceState(false);
+      })
+      .catch((error) => {
+        console.error('Error updating avance:', error.response ? error.response.data : error.message);
+      });
   };
 
   const validateEmail = (email) => {
@@ -221,6 +266,35 @@ const Page2 = () => {
                                 <Typography variant="h6"><strong>{indicatorContent.indicador}</strong></Typography>
                                 <Typography>{indicatorContent.descripcion}</Typography>
                                 <Typography>Meta {new Date().getFullYear()}: {getMetaForCurrentYear(indicatorContent.id)}</Typography>
+                                <Grid item xs={12}>
+                                    <Typography>
+                                      Meta {new Date().getFullYear()}: {getMetaForCurrentYear(indicatorContent.id)}
+                                    </Typography>
+                                      <Typography>
+                                        Avance {new Date().getFullYear()}:
+                                      </Typography>
+                                      {editAvanceState ? (
+                                        <>
+                                          <TextField
+                                            size="small"
+                                            value={currentAvance}
+                                            onChange={(e) => setCurrentAvance(e.target.value)}
+                                          />
+                                          <IconButton onClick={handleAvanceSave}>
+                                            <SaveIcon />
+                                          </IconButton>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Typography component="span">
+                                            {getAvanceForCurrentYear(indicatorContent.id)}
+                                          </Typography>
+                                          <IconButton onClick={handleAvanceEdit} disabled={userPermissions.permiso !== 'Sistemas' && userPermissions.permiso !== 'Escuela_prof'}>
+                                            <EditIcon />
+                                          </IconButton>
+                                        </>
+                                      )}
+                                  </Grid>
                                 <Divider sx={{ width: '100%', marginY: '10px', borderWidth: '2px', borderColor: 'black' }} />
                                 <Typography>Responsable: {indicatorContent.responsable}</Typography>
                                 <Typography>
