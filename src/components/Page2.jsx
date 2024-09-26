@@ -51,6 +51,14 @@ const Page2 = () => {
   const [editAvanceState, setEditAvanceState] = useState(false);
   const [currentAvance, setCurrentAvance] = useState('');
 
+  useEffect(() => {
+    setNewIndicator((prevState) => ({
+      ...prevState,
+      plantillaId: '', 
+    }));
+  }, []);
+  
+
   const userPermissions = JSON.parse(sessionStorage.getItem('logged'));
 
   const fetchData = async () => {
@@ -205,6 +213,17 @@ const Page2 = () => {
         setCreatingIndicator(false); 
         setSuccessDialogOpen(true); 
         setOpenDialog(false); 
+        // Limpiar el formulario después de crear el indicador
+        setNewIndicator({
+          nombre: '',
+          oficinaEscuela: '',
+          meta2024: '',
+          meta2025: '',
+          meta2026: '',
+          responsable: '',
+          coequipero: '',
+          plantillaId: '',
+        });
       })
       .catch((error) => {
         console.error('Error creando indicador:', error);
@@ -431,6 +450,7 @@ const Page2 = () => {
             name="nombre"
             value={newIndicator.nombre}
             onChange={handleInputChange}
+            sx={{ marginBottom: '10px' }} 
           />
           <TextField
             margin="dense"
@@ -440,6 +460,7 @@ const Page2 = () => {
             name="meta2024"
             value={newIndicator.meta2024}
             onChange={handleInputChange}
+            sx={{ marginBottom: '10px' }} 
           />
           <TextField
             margin="dense"
@@ -449,6 +470,7 @@ const Page2 = () => {
             name="meta2025"
             value={newIndicator.meta2025}
             onChange={handleInputChange}
+            sx={{ marginBottom: '10px' }} 
           />
           <TextField
             margin="dense"
@@ -458,6 +480,7 @@ const Page2 = () => {
             name="meta2026"
             value={newIndicator.meta2026}
             onChange={handleInputChange}
+            sx={{ marginBottom: '10px' }} 
           />
           <TextField
             margin="dense"
@@ -469,6 +492,7 @@ const Page2 = () => {
             onChange={handleInputChange}
             error={!!emailError}
             helperText={emailError} 
+            sx={{ marginBottom: '10px' }} 
           />
           {/* Select para el Coequipero */}
           <Select
@@ -476,6 +500,7 @@ const Page2 = () => {
             value={newIndicator.coequipero}
             onChange={(e) => setNewIndicator({ ...newIndicator, coequipero: e.target.value })}
             displayEmpty
+            sx={{ marginBottom: '10px' }} 
           >
             <MenuItem value="" disabled>Selecciona un coequipero</MenuItem>
             <MenuItem value="NA">NA</MenuItem> {/* Opción NA */}
@@ -485,18 +510,18 @@ const Page2 = () => {
               </MenuItem>
             ))}
           </Select>
-
           {/* Select para el Tipo de Plantilla */}
           <Select
             fullWidth
             value={newIndicator.plantillaId}
             onChange={(e) => setNewIndicator({ ...newIndicator, plantillaId: e.target.value })}
             displayEmpty
+            sx={{ marginBottom: '16px' }} 
           >
             <MenuItem value="" disabled>Selecciona una plantilla</MenuItem>
             {plantillas.map((plantilla) => (
               <MenuItem key={plantilla.id} value={plantilla.id}>
-                {plantilla.nombre_plantilla}  {/* Aquí muestra el nombre */}
+                {plantilla.nombre_plantilla}  
               </MenuItem>
             ))}
           </Select>
