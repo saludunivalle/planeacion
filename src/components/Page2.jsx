@@ -160,6 +160,22 @@ const Page2 = () => {
     setOpenDialog(true); 
   };
 
+  const [plantillas, setPlantillas] = useState([]);
+
+  const fetchPlantillas = async () => {
+    try {
+      const response = await axios.post('https://planeacion-server.vercel.app/getData', { sheetName: 'PLANTILLAS' });
+      console.log("plantillas", response);
+      setPlantillas(response.data.data);
+    } catch (error) {
+      console.error('Error fetching plantillas:', error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchPlantillas();
+  }, []);
+  
   const handleCreateIndicator = () => {
     if (emailError || !validateEmail(newIndicator.responsable)) {
       alert('Por favor, ingresa un correo válido del dominio @correounivalle.edu.co.');
@@ -180,8 +196,9 @@ const Page2 = () => {
       meta2025: newIndicator.meta2025,
       meta2026: newIndicator.meta2026,
       tipoOficinaEscuela: tipoOficinaEscuela, 
+      plantillaId: newIndicator.plantillaId, // Agregamos la plantilla seleccionada
     };
-
+  
     axios.post('https://planeacion-server.vercel.app/createIndicator', payload)
       .then((response) => {
         console.log('Indicador creado:', response);
@@ -468,6 +485,22 @@ const Page2 = () => {
               </MenuItem>
             ))}
           </Select>
+
+          {/* Select para el Tipo de Plantilla */}
+          <Select
+            fullWidth
+            value={newIndicator.plantillaId}
+            onChange={(e) => setNewIndicator({ ...newIndicator, plantillaId: e.target.value })}
+            displayEmpty
+          >
+            <MenuItem value="" disabled>Selecciona una plantilla</MenuItem>
+            {plantillas.map((plantilla) => (
+              <MenuItem key={plantilla.id} value={plantilla.id}>
+                {plantilla.nombre_plantilla}  {/* Aquí muestra el nombre */}
+              </MenuItem>
+            ))}
+          </Select>
+
 
           {creatingIndicator && <CircularProgress sx={{ marginTop: '20px' }} />}
         </DialogContent>
