@@ -441,6 +441,7 @@ const CreateIndicator = ({
               </TextField>
             </Grid>
             <Grid item xs={12} md={11}>
+              {/** 
               <FormControlLabel
                 sx={{ mt: 1 }}
                 control={
@@ -456,6 +457,7 @@ const CreateIndicator = ({
                 }
                 label="Suma facultad"
               />
+*/}
             </Grid>
             <Grid item xs={12} md={12}>
               <FormControl component="fieldset" sx={{ mt: 1 }}>

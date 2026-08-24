@@ -152,10 +152,12 @@ const ModalDetails = ({
             />
           </Grid>
           <Grid item xs={12} md={6}>
+            {/** 
             <DetailItem
               label="Suma facultad"
               value={toBooleanText(indicator.suma_facultad)}
             />
+           */}
           </Grid>
           <Grid item xs={12} md={6}>
             <DetailItem
