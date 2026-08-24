@@ -80,9 +80,13 @@ const EditModal = ({
       const m28 = String(meta?.meta_2028 ?? "");
       const m29 = String(meta?.meta_2029 ?? "");
       const m30 = String(meta?.meta_2030 ?? "");
-      
-      const hasPercentage = [m25, m26, m27, m28, m29, m30].some(m => m.includes("%"));
-      const hasNumber = [m25, m26, m27, m28, m29, m30].some(m => m !== "" && !m.includes("%"));
+
+      const hasPercentage = [m25, m26, m27, m28, m29, m30].some((m) =>
+        m.includes("%"),
+      );
+      const hasNumber = [m25, m26, m27, m28, m29, m30].some(
+        (m) => m !== "" && !m.includes("%"),
+      );
 
       let initialMetaType = "";
       if (hasPercentage) initialMetaType = "percentage";
@@ -153,7 +157,7 @@ const EditModal = ({
       if (val === "") return val;
       return metaType === "percentage" ? `${val}%` : val;
     };
-    
+
     onSubmit({
       ...form,
       meta_2025: formatMeta(form.meta_2025),
@@ -393,6 +397,7 @@ const EditModal = ({
                 </TextField>
               </Grid>
               <Grid item xs={12} md={12}>
+                {/** 
                 <FormControlLabel
                   sx={{ mt: 1 }}
                   control={
@@ -408,6 +413,7 @@ const EditModal = ({
                   }
                   label="Suma facultad"
                 />
+*/}
               </Grid>
               <Grid item xs={12} md={12}>
                 <FormControl component="fieldset" sx={{ mt: 1 }}>
@@ -417,20 +423,31 @@ const EditModal = ({
                     value={metaType}
                     onChange={(e) => setMetaType(e.target.value)}
                   >
-                    <FormControlLabel value="number" control={<Radio />} label="Número" />
-                    <FormControlLabel value="percentage" control={<Radio />} label="Porcentaje" />
+                    <FormControlLabel
+                      value="number"
+                      control={<Radio />}
+                      label="Número"
+                    />
+                    <FormControlLabel
+                      value="percentage"
+                      control={<Radio />}
+                      label="Porcentaje"
+                    />
                   </RadioGroup>
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={2}>
                 <TextField
                   fullWidth
-                label="Meta 2025"
-                type="text"
-                InputProps={{
-                  endAdornment: metaType === "percentage" ? <InputAdornment position="end">%</InputAdornment> : null,
-                }}
-                value={form.meta_2025}
+                  label="Meta 2025"
+                  type="text"
+                  InputProps={{
+                    endAdornment:
+                      metaType === "percentage" ? (
+                        <InputAdornment position="end">%</InputAdornment>
+                      ) : null,
+                  }}
+                  value={form.meta_2025}
                   onChange={handleMetaChange("meta_2025")}
                   disabled={!metaType}
                 />
@@ -438,12 +455,15 @@ const EditModal = ({
               <Grid item xs={12} md={2}>
                 <TextField
                   fullWidth
-                label="Meta 2026"
-                type="text"
-                InputProps={{
-                  endAdornment: metaType === "percentage" ? <InputAdornment position="end">%</InputAdornment> : null,
-                }}
-                value={form.meta_2026}
+                  label="Meta 2026"
+                  type="text"
+                  InputProps={{
+                    endAdornment:
+                      metaType === "percentage" ? (
+                        <InputAdornment position="end">%</InputAdornment>
+                      ) : null,
+                  }}
+                  value={form.meta_2026}
                   onChange={handleMetaChange("meta_2026")}
                   disabled={!metaType}
                 />
@@ -451,12 +471,15 @@ const EditModal = ({
               <Grid item xs={12} md={2}>
                 <TextField
                   fullWidth
-                label="Meta 2027"
-                type="text"
-                InputProps={{
-                  endAdornment: metaType === "percentage" ? <InputAdornment position="end">%</InputAdornment> : null,
-                }}
-                value={form.meta_2027}
+                  label="Meta 2027"
+                  type="text"
+                  InputProps={{
+                    endAdornment:
+                      metaType === "percentage" ? (
+                        <InputAdornment position="end">%</InputAdornment>
+                      ) : null,
+                  }}
+                  value={form.meta_2027}
                   onChange={handleMetaChange("meta_2027")}
                   disabled={!metaType}
                 />
@@ -464,12 +487,15 @@ const EditModal = ({
               <Grid item xs={12} md={2}>
                 <TextField
                   fullWidth
-                label="Meta 2028"
-                type="text"
-                InputProps={{
-                  endAdornment: metaType === "percentage" ? <InputAdornment position="end">%</InputAdornment> : null,
-                }}
-                value={form.meta_2028}
+                  label="Meta 2028"
+                  type="text"
+                  InputProps={{
+                    endAdornment:
+                      metaType === "percentage" ? (
+                        <InputAdornment position="end">%</InputAdornment>
+                      ) : null,
+                  }}
+                  value={form.meta_2028}
                   onChange={handleMetaChange("meta_2028")}
                   disabled={!metaType}
                 />
@@ -477,12 +503,15 @@ const EditModal = ({
               <Grid item xs={12} md={2}>
                 <TextField
                   fullWidth
-                label="Meta 2029"
-                type="text"
-                InputProps={{
-                  endAdornment: metaType === "percentage" ? <InputAdornment position="end">%</InputAdornment> : null,
-                }}
-                value={form.meta_2029}
+                  label="Meta 2029"
+                  type="text"
+                  InputProps={{
+                    endAdornment:
+                      metaType === "percentage" ? (
+                        <InputAdornment position="end">%</InputAdornment>
+                      ) : null,
+                  }}
+                  value={form.meta_2029}
                   onChange={handleMetaChange("meta_2029")}
                   disabled={!metaType}
                 />
@@ -490,12 +519,15 @@ const EditModal = ({
               <Grid item xs={12} md={2}>
                 <TextField
                   fullWidth
-                label="Meta 2030"
-                type="text"
-                InputProps={{
-                  endAdornment: metaType === "percentage" ? <InputAdornment position="end">%</InputAdornment> : null,
-                }}
-                value={form.meta_2030}
+                  label="Meta 2030"
+                  type="text"
+                  InputProps={{
+                    endAdornment:
+                      metaType === "percentage" ? (
+                        <InputAdornment position="end">%</InputAdornment>
+                      ) : null,
+                  }}
+                  value={form.meta_2030}
                   onChange={handleMetaChange("meta_2030")}
                   disabled={!metaType}
                 />
