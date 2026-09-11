@@ -379,7 +379,10 @@ function Consolidados({ data, userInfo }) {
     selectedYear,
   ]);
 
-  const totalSummaryIndicators = filteredIndicators.length;
+  const totalSummaryIndicators = statsByDesafio.reduce(
+    (total, row) => total + row.numIndicadores,
+    0,
+  );
 
   // View 2: Aggregate data by Desafío AND Dependencia (Vista por Escuela)
   const statsByEscuela = useMemo(() => {
@@ -718,6 +721,12 @@ function Consolidados({ data, userInfo }) {
       const key = `${indicator.id_desafio}_${normalize(indicator.nombre)}`;
       const existing = grouped.get(key);
       if (existing) {
+        const dependencyId = String(indicator.id_dependencia || "");
+        const dependencyName = toText(
+          dependenciaById.get(dependencyId)?.nombre,
+        );
+        existing.dependencyCounts[dependencyName] =
+          (existing.dependencyCounts[dependencyName] || 0) + 1;
         existing.metaValue =
           getSafeNumber(existing.metaValue) + getSafeNumber(planned);
         existing.avanceValue =
@@ -731,8 +740,11 @@ function Consolidados({ data, userInfo }) {
       grouped.set(key, {
         ...indicator,
         desafioNombre: desafioById.get(String(indicator.id_desafio))?.titulo,
-        dependenciaNombre: dependenciaById.get(String(indicator.id_dependencia))
-          ?.nombre,
+        dependencyCounts: {
+          [toText(
+            dependenciaById.get(String(indicator.id_dependencia))?.nombre,
+          )]: 1,
+        },
         convergenteNombre: convergentes.find(
           (item) =>
             String(item.id) === String(indicator.id_estrategia_convergente),
@@ -746,7 +758,12 @@ function Consolidados({ data, userInfo }) {
         executionPercent: formatExecutionPercent(planned, executed),
       });
     });
-    return [...grouped.values()];
+    return [...grouped.values()].map((row) => ({
+      ...row,
+      dependenciaNombre: Object.entries(row.dependencyCounts)
+        .map(([name, count]) => `${name} (${count})`)
+        .join(", "),
+    }));
   }, [
     filteredIndicators,
     metaByIndicatorId,
