@@ -19,6 +19,8 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
+  Switch,
+  Tooltip,
 } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { PieChart } from "@mui/x-charts/PieChart";
@@ -101,6 +103,18 @@ const percentageClass = (value) => {
   return "transparent";
 };
 
+const compactDesafioLabel = (name, id) => {
+  const match = String(name ?? "").match(/^Desaf[ií]o\s+\d+/i);
+  return match?.[0] || `Desafío ${id}`;
+};
+
+const compactConvergenteLabel = (name) => {
+  const match = String(name ?? "").match(
+    /^Estrategia\s+Convergente\s+\d+(?:\.\d+)*/i,
+  );
+  return match?.[0] || toText(name);
+};
+
 function Consolidados({ data, userInfo }) {
   useEffect(() => {
     document.title = "Consolidados";
@@ -121,6 +135,7 @@ function Consolidados({ data, userInfo }) {
   const [selectedPrograma, setSelectedPrograma] = useState("");
   const [selectedResultado, setSelectedResultado] = useState("");
   const [advancedFiltersOpen, setAdvancedFiltersOpen] = useState(false);
+  const [showDependencyColumn, setShowDependencyColumn] = useState(false);
 
   const sessionUser = useMemo(() => {
     if (userInfo) return userInfo;
@@ -364,10 +379,7 @@ function Consolidados({ data, userInfo }) {
     selectedYear,
   ]);
 
-  const totalSummaryIndicators = useMemo(
-    () => statsByDesafio.reduce((total, row) => total + row.numIndicadores, 0),
-    [statsByDesafio],
-  );
+  const totalSummaryIndicators = filteredIndicators.length;
 
   // View 2: Aggregate data by Desafío AND Dependencia (Vista por Escuela)
   const statsByEscuela = useMemo(() => {
@@ -725,6 +737,10 @@ function Consolidados({ data, userInfo }) {
           (item) =>
             String(item.id) === String(indicator.id_estrategia_convergente),
         )?.titulo,
+        facultadNombre: facultades.find(
+          (item) =>
+            String(item.id) === String(indicator.id_estrategia_facultad),
+        )?.titulo,
         metaValue: planned,
         avanceValue: executed,
         executionPercent: formatExecutionPercent(planned, executed),
@@ -739,7 +755,22 @@ function Consolidados({ data, userInfo }) {
     desafioById,
     dependenciaById,
     convergentes,
+    facultades,
   ]);
+
+  const detailedColumns = useMemo(
+    () => [
+      "Desafío",
+      "Estrategia convergente",
+      "Estrategia facultad",
+      ...(showDependencyColumn ? ["Dependencia"] : []),
+      "Indicador",
+      "Meta planeada",
+      "Meta ejecutada",
+      "% ejecutado",
+    ],
+    [showDependencyColumn],
+  );
 
   const summaryTotals = useMemo(() => {
     let planned = 0;
@@ -1122,20 +1153,13 @@ function Consolidados({ data, userInfo }) {
     doc.addPage("l");
     addTitle("Consolidados - Detallado");
     addTable(
-      [
-        "Desafío",
-        "Estrategia convergente",
-        "Indicador",
-        "Dependencia",
-        "Meta planeada",
-        "Meta ejecutada",
-        "% ejecutado",
-      ],
+      detailedColumns,
       indicatorRows.map((row) => [
         toText(row.desafioNombre),
         toText(row.convergenteNombre),
+        toText(row.facultadNombre),
+        ...(showDependencyColumn ? [toText(row.dependenciaNombre)] : []),
         toText(row.nombre),
-        toText(row.dependenciaNombre),
         row.metaValue ?? "Sin registro",
         row.avanceValue ?? "Sin registro",
         row.executionPercent,
@@ -1181,7 +1205,7 @@ function Consolidados({ data, userInfo }) {
               Consolidados
             </Typography>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              {summaryTotals.valid} indicadores con seguimiento
+              {totalSummaryIndicators} indicadores
             </Typography>
           </Box>
           <FormControl size="small" sx={{ minWidth: 120 }}>
@@ -1575,64 +1599,110 @@ function Consolidados({ data, userInfo }) {
       )}
 
       {viewType === "indicadores" && (
-        <TableContainer component={Paper} className="seguimientos-table-card">
-          <Table size="small">
-            <TableBody>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 800 }}>Desafío</TableCell>
-                <TableCell sx={{ fontWeight: 800 }}>
-                  Estrategia Convergente
-                </TableCell>
-                <TableCell sx={{ fontWeight: 800 }}>Nombre Indicador</TableCell>
-                <TableCell sx={{ fontWeight: 800 }}>Dependencia</TableCell>
-                <TableCell sx={{ fontWeight: 800 }}>Meta planeada</TableCell>
-                <TableCell sx={{ fontWeight: 800 }}>Meta ejecutada</TableCell>
-                <TableCell sx={{ fontWeight: 800 }}>
-                  Porcentaje ejecutado
-                </TableCell>
-              </TableRow>
-              {indicatorRows.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell>{toText(row.desafioNombre)}</TableCell>
-                  <TableCell>{toText(row.convergenteNombre)}</TableCell>
-                  <TableCell>{toText(row.nombre)}</TableCell>
-                  <TableCell>{toText(row.dependenciaNombre)}</TableCell>
-                  <TableCell>{row.metaValue ?? "Sin registro"}</TableCell>
-                  <TableCell
-                    sx={{
-                      backgroundColor: percentageClass(row.executionPercent),
-                    }}
-                  >
-                    {row.avanceValue ?? "Sin registro"}
+        <Box>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={showDependencyColumn}
+                  onChange={(event) =>
+                    setShowDependencyColumn(event.target.checked)
+                  }
+                />
+              }
+              label="Mostrar dependencia"
+            />
+          </Box>
+          <TableContainer component={Paper} className="seguimientos-table-card">
+            <Table size="small">
+              <TableBody>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 800 }}>Desafío</TableCell>
+                  <TableCell sx={{ fontWeight: 800 }}>
+                    Estrategia Convergente
                   </TableCell>
-                  <TableCell
-                    sx={{
-                      backgroundColor: percentageClass(row.executionPercent),
-                    }}
-                  >
-                    {row.executionPercent}
+                  <TableCell sx={{ fontWeight: 800 }}>
+                    Estrategia Facultad
+                  </TableCell>
+                  {showDependencyColumn && (
+                    <TableCell sx={{ fontWeight: 800 }}>Dependencia</TableCell>
+                  )}
+                  <TableCell sx={{ fontWeight: 800 }}>
+                    Nombre Indicador
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 800 }}>Meta planeada</TableCell>
+                  <TableCell sx={{ fontWeight: 800 }}>Meta ejecutada</TableCell>
+                  <TableCell sx={{ fontWeight: 800 }}>
+                    Porcentaje ejecutado
                   </TableCell>
                 </TableRow>
-              ))}
-              <TableRow>
-                <TableCell colSpan={5} sx={{ fontWeight: 800 }}>
-                  Total porcentaje ejecutado
-                </TableCell>
-                <TableCell sx={{ fontWeight: 800 }}>
-                  {summaryTotals.percentage.toFixed(1).replace(".", ",")}%
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell colSpan={5} sx={{ fontWeight: 800 }}>
-                  Pendiente por ejecutar
-                </TableCell>
-                <TableCell sx={{ fontWeight: 800 }}>
-                  {summaryTotals.pending.toFixed(1).replace(".", ",")}%
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+                {indicatorRows.map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell>
+                      <Tooltip title={toText(row.desafioNombre)}>
+                        <span>
+                          {compactDesafioLabel(
+                            row.desafioNombre,
+                            row.id_desafio,
+                          )}
+                        </span>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>
+                      <Tooltip title={toText(row.convergenteNombre)}>
+                        <span>
+                          {compactConvergenteLabel(row.convergenteNombre)}
+                        </span>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell>{toText(row.facultadNombre)}</TableCell>
+                    {showDependencyColumn && (
+                      <TableCell>{toText(row.dependenciaNombre)}</TableCell>
+                    )}
+                    <TableCell>{toText(row.nombre)}</TableCell>
+                    <TableCell>{row.metaValue ?? "Sin registro"}</TableCell>
+                    <TableCell
+                      sx={{
+                        backgroundColor: percentageClass(row.executionPercent),
+                      }}
+                    >
+                      {row.avanceValue ?? "Sin registro"}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        backgroundColor: percentageClass(row.executionPercent),
+                      }}
+                    >
+                      {row.executionPercent}
+                    </TableCell>
+                  </TableRow>
+                ))}
+                <TableRow>
+                  <TableCell
+                    colSpan={detailedColumns.length - 1}
+                    sx={{ fontWeight: 800 }}
+                  >
+                    Total porcentaje ejecutado
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 800 }}>
+                    {summaryTotals.percentage.toFixed(1).replace(".", ",")}%
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell
+                    colSpan={detailedColumns.length - 1}
+                    sx={{ fontWeight: 800 }}
+                  >
+                    Pendiente por ejecutar
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 800 }}>
+                    {summaryTotals.pending.toFixed(1).replace(".", ",")}%
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
       )}
 
       {viewType === "desafios" && (
