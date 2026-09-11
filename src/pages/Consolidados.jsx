@@ -1442,7 +1442,11 @@ function Consolidados({ data, userInfo }) {
       </ToggleButtonGroup>
 
       {viewType === "resumen" && (
-        <Paper className="seguimientos-summary-horizontal" elevation={1}>
+        <Paper
+          className="seguimientos-summary-horizontal"
+          elevation={1}
+          sx={{ mb: 10 }}
+        >
           <Box className="seguimientos-summary-inner">
             <Box className="seguimientos-summary-section seguimientos-summary-resumen">
               <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>
@@ -1570,6 +1574,9 @@ function Consolidados({ data, userInfo }) {
                       </TableBody>
                     </Table>
                   </TableContainer>
+                  <Typography sx={{ fontWeight: 800, ml: 29, mt: 1 }}>
+                    Total: {totalSummaryIndicators}
+                  </Typography>
                 </Box>
               </Box>
               <Box className="seguimientos-stats-cards">
@@ -1630,7 +1637,11 @@ function Consolidados({ data, userInfo }) {
               label="Mostrar dependencia"
             />
           </Box>
-          <TableContainer component={Paper} className="seguimientos-table-card">
+          <TableContainer
+            component={Paper}
+            className="seguimientos-table-card"
+            sx={{ mb: 20 }}
+          >
             <Table size="small">
               <TableBody>
                 <TableRow>
@@ -1838,7 +1849,7 @@ function Consolidados({ data, userInfo }) {
           </TableContainer>
 
           {chartDataDesafios.length > 0 && (
-            <Paper sx={{ p: 3, boxShadow: 3, borderRadius: 2 }}>
+            <Paper sx={{ p: 3, boxShadow: 3, borderRadius: 2, mb: 20 }}>
               <Typography
                 variant="subtitle1"
                 sx={{ mb: 2, fontWeight: "bold", textAlign: "center" }}
@@ -2079,7 +2090,7 @@ function Consolidados({ data, userInfo }) {
               >
                 Porcentaje de Ejecución por Desafío y {titleLabel}
               </Typography>
-              <Box sx={{ width: "100%", height: 500 }}>
+              <Box sx={{ width: "100%", height: 500, mb: 20 }}>
                 <BarChart
                   dataset={chartDataItems}
                   xAxis={[{ scaleType: "band", dataKey: "desafio" }]}
@@ -2102,7 +2113,9 @@ function Consolidados({ data, userInfo }) {
           )}
 
           {itemTotals.length > 0 && (
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <Box
+              sx={{ display: "flex", flexDirection: "column", gap: 4, mb: 20 }}
+            >
               <Typography variant="h6" sx={{ color: "#34495e" }}>
                 Resumen Total por {titleLabel}
               </Typography>
